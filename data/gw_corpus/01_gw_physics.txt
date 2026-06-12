@@ -1,0 +1,118 @@
+# Gravitational Waves — Physics and Theory
+
+## What Are Gravitational Waves?
+
+Gravitational waves are ripples in the fabric of spacetime caused by the acceleration of massive objects.
+They were predicted by Albert Einstein in 1916 as a consequence of his General Theory of Relativity.
+The first direct detection was made on September 14, 2015 by the LIGO detectors (GW150914).
+
+Gravitational waves travel at the speed of light: c = 3 × 10⁸ m/s.
+They carry energy and angular momentum away from their source.
+As gravitational waves pass, they alternately stretch and squeeze spacetime in directions perpendicular to propagation.
+
+## General Relativity Basics
+
+Einstein's field equations: G_μν = (8πG/c⁴) T_μν
+G_μν = Einstein tensor (spacetime curvature)
+T_μν = stress-energy tensor (matter and energy content)
+G = 6.674 × 10⁻¹¹ m³ kg⁻¹ s⁻² (gravitational constant)
+
+The metric tensor g_μν describes the geometry of spacetime.
+Flat (Minkowski) spacetime: ds² = -c²dt² + dx² + dy² + dz²
+In the weak-field limit: g_μν = η_μν + h_μν where |h_μν| << 1
+
+The linearized Einstein equations yield a wave equation for h_μν:
+□h̄_μν = -16πG/c⁴ T_μν
+where □ is the d'Alembertian operator and h̄_μν is the trace-reversed perturbation.
+
+## Gravitational Wave Polarizations
+
+Gravitational waves have two independent polarization states:
+- Plus polarization (h₊): stretches in x, squeezes in y (and vice versa)
+- Cross polarization (h×): stretches/squeezes at 45° to plus polarization
+
+The strain h measures the fractional change in distance:
+h = ΔL / L
+where ΔL is the change in arm length and L is the original arm length.
+
+Typical strain amplitudes from astrophysical sources: h ~ 10⁻²¹ to 10⁻²³
+This means for LIGO (arm length L = 4 km): ΔL ~ 10⁻¹⁸ m (1/1000 the size of a proton!)
+
+## Gravitational Wave Sources
+
+### Compact Binary Coalescence (CBC)
+Binary systems of two compact objects (black holes, neutron stars, white dwarfs) spiraling inward.
+As they orbit, they radiate gravitational wave energy, causing the orbit to shrink (inspiral).
+Eventually they merge, producing a final "ringdown" as the merged object settles.
+
+Phases of CBC:
+1. Inspiral: slow spiral, chirp signal increasing in frequency and amplitude
+2. Merger: peak strain, highly nonlinear dynamics
+3. Ringdown: quasi-normal modes of the merged black hole/neutron star
+
+### Continuous Gravitational Waves
+From spinning asymmetric neutron stars (pulsars with "mountains").
+Nearly monochromatic (single frequency) signals.
+Very weak amplitude, require long observation times.
+
+### Burst Sources
+Supernovae, cosmic string interactions, unknown sources.
+Short-duration, broadband signals.
+
+### Stochastic Background
+Superposition of many unresolved sources.
+Cosmological background from inflation or early universe phase transitions.
+
+## Chirp Signal
+
+A chirp is the gravitational waveform from a binary inspiral.
+Frequency increases (sweeps up) as the binary loses energy to gravitational radiation.
+
+Chirp mass (M_c): determines the evolution of the orbital frequency.
+M_c = (m₁ m₂)^(3/5) / (m₁ + m₂)^(1/5)
+
+Orbital frequency evolution: df/dt = (96/5) π^(8/3) (G M_c/c³)^(5/3) f^(11/3)
+
+GW frequency (twice orbital frequency): f_GW = 2 f_orbital
+
+At merger: f_GW ~ c³/(6^(3/2) π G M_total)
+For 30+30 solar mass black holes: f_merger ~ 150 Hz
+
+Strain amplitude of inspiral:
+h(t) = (4/r) (G M_c/c²) (π G M_c f/c³)^(2/3)
+where r = distance to source.
+
+## The Quadrupole Formula
+
+Power radiated in gravitational waves (quadrupole approximation):
+P = -(G/5c⁵) <d³Iij/dt³ d³Iij/dt³>
+where Iij is the mass quadrupole moment tensor.
+
+This is the famous quadrupole formula, valid for slow-moving, weak-field sources.
+A sphere has zero quadrupole radiation — only asymmetric motions radiate.
+Binary orbit produces quadrupole radiation because the mass distribution changes periodically.
+
+## Energy and Frequency Evolution
+
+Energy of Newtonian circular orbit: E = -G m₁ m₂ / (2a) where a = semi-major axis
+Energy radiated per orbit: ΔE = (32/5) G⁴ m₁² m₂² (m₁+m₂) / (c⁵ a⁵) · 2π/ω
+
+Orbital decay: da/dt = -(64/5) G³ m₁ m₂ (m₁+m₂) / (c⁵ a³)
+
+Peters formula for merger timescale:
+T_merge = (12/19) a₀⁴ c₀ / (β G(m₁+m₂)) × integral term
+where a₀ = initial separation.
+
+## Strain Sensitivity and Detection
+
+Signal-to-noise ratio: SNR = sqrt(4 ∫|h̃(f)|²/S_n(f) df)
+h̃(f) = Fourier transform of strain signal h(t)
+S_n(f) = one-sided noise power spectral density [1/Hz]
+
+Optimal matched filter: cross-correlate signal with template waveform.
+SNR > 8 typically required for confident detection.
+Network of detectors: SNR² = Σ SNR²_detector (for coherent combination).
+
+Horizon distance: the maximum distance at which a source is detectable (SNR ≥ 8).
+LIGO's binary neutron star horizon: ~200 Mpc
+LIGO's binary black hole (30+30 M☉) horizon: ~5 Gpc

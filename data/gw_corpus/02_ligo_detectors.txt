@@ -1,0 +1,128 @@
+# LIGO, Virgo, and Gravitational Wave Detectors
+
+## Laser Interferometer Gravitational-Wave Observatory (LIGO)
+
+LIGO consists of two L-shaped detectors in the USA:
+- LIGO Hanford (H1): Hanford, Washington State
+- LIGO Livingston (L1): Livingston, Louisiana
+- Separation: ~3,000 km (10 ms light travel time)
+
+Each detector has two perpendicular arms, each 4 km long.
+Arm tubes are evacuated to pressures of ~10⁻⁹ torr (ultra-high vacuum).
+
+## Interferometry Principle
+
+LIGO uses Michelson interferometry to detect tiny changes in arm length.
+A laser beam is split at a beamsplitter; each beam travels down one arm.
+Mirrors at the ends reflect the beams back to the beamsplitter.
+The beams recombine and interfere — the pattern reveals any difference in arm length.
+
+When a GW passes, one arm is stretched while the other is compressed.
+This creates a differential arm length change: ΔL = h × L
+For h = 10⁻²¹ and L = 4 km: ΔL ~ 4 × 10⁻¹⁸ m
+
+Power recycling cavity: boosts input laser power from ~150W to ~100 kW in the arms.
+Signal recycling cavity: optimizes response at GW frequencies.
+
+## Fabry-Pérot Cavities
+
+The arms are Fabry-Pérot resonant cavities (not simple mirrors).
+Finesse F ~ 450 means light bounces ~300 times before exiting.
+Effective arm length: L_eff = F/π × L ~ 1200 km
+This dramatically increases the phase shift from a given GW strain.
+
+Storage time of light in cavity: τ ≈ 2FL/(πc) ~ 2.7 ms
+This limits sensitivity above ~300 Hz.
+
+## Advanced LIGO (aLIGO)
+
+Advanced LIGO (upgraded 2015) uses quantum optics techniques:
+- 40 kg fused silica test masses (mirrors)
+- High laser power (~200W input, ~750 kW in Fabry-Pérot cavities)
+- Seismic isolation: active and passive multi-stage isolation systems
+- Thermal noise mitigation: monolithic mirror suspensions, cryogenic cooling planned
+
+Sensitivity: strain noise floor ~ 10⁻²³ /√Hz at best frequency (~150-300 Hz)
+Frequency range: ~10 Hz to ~5000 Hz (sensitive band: ~20-2000 Hz)
+
+## Noise Sources in LIGO
+
+### Seismic Noise (low frequency, <20 Hz)
+Ground vibrations from earthquakes, ocean waves ("microseismic hump"), human activity.
+Couples into detector through suspensions.
+Mitigated by: multi-stage pendulum suspensions, active seismic isolation (HEPI, HAM-ISI).
+Sets low-frequency wall: LIGO not sensitive below ~10-20 Hz.
+
+### Thermal Noise (10-200 Hz)
+Random thermal fluctuations of atoms in mirror coatings and substrates.
+Fluctuation-dissipation theorem: S_x(f) = (4k_B T / ω) Im[χ(ω)]
+Types:
+- Mirror coating thermal noise (dominant ~50-200 Hz)
+- Suspension fiber thermal noise (~10-50 Hz)
+- Substrate (bulk) Brownian noise
+Mitigated by: very low-loss materials (fused silica), low-noise coatings (Ta₂O₅/SiO₂).
+
+### Shot Noise (high frequency, >200 Hz)
+Quantum noise from photon counting statistics.
+S_shot ∝ 1/P_laser (decreases with more laser power)
+Standard quantum limit: Δx_SQL = √(ℏ/mω²τ)
+Mitigated by: squeezed light injection (reduces photon number uncertainty below shot noise).
+
+### Quantum Radiation Pressure Noise (low frequency)
+Higher laser power increases quantum back-action from photon momentum kicks.
+S_QRPN ∝ P_laser
+There is a trade-off: more power reduces shot noise but increases radiation pressure noise.
+Standard Quantum Limit (SQL) sets the minimum of combined quantum noise.
+
+### Quantum Noise Below the SQL (Squeezing)
+Frequency-dependent squeezing allows beating the SQL.
+First demonstrated at LIGO 2019.
+Injects squeezed vacuum states to reduce noise in measured quadrature.
+
+### Non-Gaussian Noise / Glitches
+Transient noise artifacts: "glitches" from various instrumental/environmental sources.
+Types: scattered light, thermally-induced mirror jerks, electronics noise spikes.
+Glitch rates: several per hour in initial LIGO, ~1/day in O3.
+Detection challenge: short-duration glitches overlap with GW signals.
+Classification: used ML (Gravity Spy, GravitySpy CNN) to identify glitch types.
+
+## Other Detectors
+
+### Virgo (Italy)
+Located near Pisa, Italy. Arm length: 3 km.
+Part of LIGO-Virgo-KAGRA network.
+Critical for sky localization of GW sources (triangulation).
+Detected GW170817 jointly with LIGO.
+
+### KAGRA (Japan)
+Underground (Kamioka mine) cryogenic detector.
+Arm length: 3 km. Mirror temperature: 20 K (cryogenic).
+Underground location greatly reduces seismic noise.
+
+### LISA (Space-based, future ~2035)
+Laser Interferometer Space Antenna.
+Three spacecraft in heliocentric orbit, arm length: 2.5 million km.
+Targets: supermassive BH mergers, galactic binaries, extreme mass ratio inspirals.
+Frequency band: 0.1 mHz to 1 Hz (complementary to ground-based).
+
+## Detector Characterization
+
+Noise PSD S_n(f): measured from detector output when no signal present.
+Amplitude spectral density (ASD): √S_n(f) in units of strain/√Hz.
+Typical LIGO ASD: ~10⁻²³ strain/√Hz at 150 Hz.
+
+Calibration: convert photodetector readout (Watts) to strain (dimensionless).
+Uncertainty: ~1% amplitude, ~10 ms phase.
+
+Data quality flags: mark times with known noise issues (PEM sensors, control systems).
+Categories: CAT1 (detector not operating), CAT2 (non-astrophysical transients), CAT3.
+
+## Network Operations
+
+Single detector: can't distinguish GW from seismic glitch.
+Two detectors (LIGO H+L): require signal in both within 10 ms light travel time.
+Three+ detectors: triangulate sky position using time delays.
+Sky localization improves with more detectors: ~100s deg² with 2 detectors, ~few deg² with 3+.
+
+Coincidence search: find events in multiple detectors within allowed time window.
+Coherent search: combine data from all detectors with appropriate phase relationships.

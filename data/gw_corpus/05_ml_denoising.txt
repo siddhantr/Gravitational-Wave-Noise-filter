@@ -1,0 +1,152 @@
+# Machine Learning for Gravitational Wave Denoising
+
+## Why Machine Learning?
+
+Traditional GW signal processing relies on matched filtering with known templates.
+Limitations of classical approaches:
+- Requires exact waveform templates (not available for all sources)
+- Computationally expensive for large parameter spaces
+- Struggles with non-Gaussian, non-stationary noise (glitches)
+- Cannot adapt to changing noise conditions
+
+ML advantages:
+- Learn noise features directly from data without explicit noise model
+- Handle non-Gaussian noise and transients
+- Real-time processing (once trained, inference is fast)
+- Can generalize to unknown signal morphologies
+
+## Deep Learning Architectures for GW Denoising
+
+### 1D Convolutional Autoencoders
+
+Architecture: Encoder → Bottleneck → Decoder
+Encoder: series of 1D Conv layers with downsampling (strided convolutions or pooling)
+Bottleneck: compressed latent representation of the signal
+Decoder: series of 1D transposed Conv layers to reconstruct clean signal
+
+Training objective: minimize reconstruction loss
+L = ||s - ŝ||² (MSE loss for signal reconstruction)
+Input: noisy GW data h_noisy = h_signal + h_noise
+Output: denoised estimate ĥ_signal
+
+Advantage: no template required, learns noise statistics from data.
+Example: WaveNet-style architecture applied to GW signals.
+
+### Convolutional Neural Networks (CNNs)
+
+Used for:
+- Glitch detection and classification
+- Signal vs noise classification (deep learning matched filtering)
+- Parameter estimation (mass, spin from waveform)
+
+Notable work:
+- George & Huerta (2017): CNN detecting binary BH mergers in real LIGO noise
+- Classification SNR threshold: CNN ~ matched filter at SNR > 8
+- Real-time capability: ~ms inference time vs seconds for matched filter
+
+Architecture: Conv1D → BatchNorm → ReLU → Conv1D → ... → FC layers
+Input: 1-second chunks of whitened LIGO data
+Output: binary classification (GW / noise) or parameter estimates
+
+### Recurrent Neural Networks (LSTMs, GRUs)
+
+LSTM (Long Short-Term Memory) captures temporal dependencies in time series.
+Well-suited for sequential GW data with long-range correlations.
+Used for: signal denoising, frequency tracking in chirp signals.
+
+Bidirectional LSTM: uses future context for better denoising (offline processing).
+Architecture: BiLSTM → Dense → output clean signal
+
+### WaveNet / Temporal Convolutional Networks (TCN)
+
+Dilated causal convolutions: exponentially growing receptive field.
+WaveNet-style: each layer has dilation rate 2^n → captures multi-scale features.
+TCN: same idea with residual connections.
+
+Advantage for GW: captures both fine-scale oscillations and slow chirp evolution.
+Kernel size: typically 3-7 per layer, 8-15 layers with dilations.
+
+### Variational Autoencoders (VAE)
+
+Probabilistic encoder: learns posterior P(z|x_noisy).
+Decoder: generates clean signal from latent code z.
+Loss: ELBO = E[log P(x_clean|z)] - KL[Q(z|x) || P(z)]
+
+Advantage: provides uncertainty estimates on denoised output.
+Can generate samples to assess detection confidence.
+
+### U-Net Architecture
+
+Skip connections between encoder and decoder (borrowed from image segmentation).
+Preserves fine-grained signal features lost in bottleneck.
+Applied to GW spectrogram denoising (2D version) and time series (1D version).
+
+Residual connections: output = input + learned_correction (denoising residual).
+Often more stable training than full reconstruction.
+
+## Transfer Learning and Domain Adaptation
+
+Challenge: simulated (synthetic) training data differs from real detector noise.
+Transfer learning: pre-train on simulated data, fine-tune on real LIGO data.
+Domain adaptation: minimize distribution shift between simulated and real domains.
+
+Datasets:
+- LIGO Open Data (GWOSC): real strain data from O1, O2, O3.
+- PyCBC: simulated GW waveforms + noise injections.
+- GW Open Science Center: training datasets with known injections.
+
+## BayesWave
+
+BayesWave: Bayesian time-frequency decomposition of GW data.
+Models: signal + glitches + Gaussian noise using Morlet-Gabor wavelets.
+Trans-dimensional MCMC: explores models with varying number of wavelets.
+Output: posterior on signal waveform, separate glitch reconstruction.
+
+Used in LIGO standard pipeline for:
+- Glitch subtraction from CBC events
+- Characterizing unmodeled GW bursts
+- Noise spectral estimation
+
+Not strictly ML but Bayesian inference; often compared to DL approaches.
+
+## Training Data Generation
+
+Synthetic GW signals: use PyCBC, LALSuite, or simplified post-Newtonian approximations.
+Inject into real noise: add signals to LIGO background data.
+Parameter ranges: masses m₁, m₂ in [1, 100] M☉, spin parameters, distances.
+
+Data augmentation:
+- Random time shifts, SNR scaling
+- Different noise realizations
+- Varying merger time within analysis window
+
+Train/validation/test split: 70/15/15 (avoid data leakage).
+Class balance: equal positive (GW+noise) and negative (noise only) examples.
+
+## Evaluation Metrics
+
+Signal-to-Noise Ratio (SNR) improvement: ΔSNRdB = 10 log₁₀(SNR_out/SNR_in)
+Mean Squared Error (MSE): ||h_clean - h_estimate||²
+Overlap: O = |<h_est|h_true>| / sqrt(<h_est|h_est><h_true|h_true>)
+Perfect recovery: O = 1. Typical deep learning: O ~ 0.9-0.97 at SNR > 10.
+
+Receiver Operating Characteristic (ROC): TPR vs FPR at varying thresholds.
+Area Under Curve (AUC): 1.0 = perfect classifier.
+
+## Notable Projects and Papers
+
+- George & Huerta, "Deep Learning for Real-time Gravitational Wave Detection" (2018)
+- Gabbard et al., "Matching Matched Filtering with Deep Networks for Gravitational Wave Astronomy" (2018)
+- Shen et al., "Denoising Gravitational Waves using Deep Learning with Recurrent Denoising Autoencoders" (2019)
+- Torres-Forné et al., "Denoising of Gravitational Wave Signals via Deep Learning with Recurrent Denoising Autoencoders" (2020)
+- Colgan et al., "Efficient gravitational-wave analysis with neural posterior estimation" (2022)
+
+## Real-Time GW ML Pipelines
+
+MLGWSC-1 (ML GW Search Challenge): benchmark comparing ML detectors.
+PyCBC Live + ML integration: near real-time detection.
+GWpy: Python library for GW data handling used in ML workflows.
+LIGO-ML: ML tools maintained by LIGO collaboration.
+
+Latency requirements: < 1 minute for low-latency alerts to EM partners.
+Deep learning inference: typically < 1 ms/sample → easily meets latency requirement.

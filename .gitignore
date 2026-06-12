@@ -1,0 +1,26 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+.venv/
+venv/
+env/
+
+# Data (generated at runtime)
+data/chunks.json
+data/faiss_index.pkl
+data/models/
+
+# Environment
+.env
+
+# macOS
+.DS_Store
+
+# Editor
+.vscode/
+.idea/
+*.swp
+
+# Logs
+*.log

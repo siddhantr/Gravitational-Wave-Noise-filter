@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>GravWave — Gravitational Wave Noise Filter</title>
+  <meta name="description" content="Simulate, filter, and understand gravitational wave signals from LIGO-like detectors using DSP and machine learning. Powered by a GW physics RAG chatbot." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-zoom@2.0.1/dist/chartjs-plugin-zoom.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/hammerjs@2.0.8/hammer.min.js"></script>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<!-- ── Animated starfield background ── -->
+<canvas id="starfield" aria-hidden="true"></canvas>
+
+<!-- ── Header ── -->
+<header class="header">
+  <div class="header-inner">
+    <div class="logo">
+      <span class="logo-icon">〜</span>
+      <span class="logo-text">GravWave</span>
+      <span class="logo-badge">LIGO Simulator</span>
+    </div>
+    <nav class="header-nav">
+      <a href="#simulator" class="nav-link active" id="nav-simulator">Simulator</a>
+      <a href="#chatbot"   class="nav-link"        id="nav-chatbot">GravBot</a>
+    </nav>
+    <div class="header-status">
+      <span class="status-dot" id="api-status-dot"></span>
+      <span class="status-label" id="api-status-label">Connecting…</span>
+    </div>
+  </div>
+</header>
+
+<!-- ═══════════════════════════════════════════════════════════════════════════
+     SIMULATOR SECTION
+════════════════════════════════════════════════════════════════════════════ -->
+<main id="simulator" class="section active">
+
+  <!-- Hero banner -->
+  <div class="hero">
+    <div class="hero-content">
+      <div class="hero-tag">Signal Processing · Machine Learning · General Relativity</div>
+      <h1 class="hero-title">Gravitational Wave<br /><span class="gradient-text">Noise Filter</span></h1>
+      <p class="hero-sub">
+        Simulate binary merger chirp signals, add realistic LIGO detector noise,
+        and compare classical DSP vs ML denoising techniques — all in real time.
+      </p>
+    </div>
+    <div class="hero-stats">
+      <div class="stat-card">
+        <span class="stat-num" id="stat-snr">—</span>
+        <span class="stat-label">Peak SNR (dB)</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-num" id="stat-chirp">—</span>
+        <span class="stat-label">Chirp Mass (M☉)</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-num" id="stat-samples">—</span>
+        <span class="stat-label">Data Points</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main content grid -->
+  <div class="app-grid">
+
+    <!-- ── Left: Controls ── -->
+    <aside class="controls-panel glass-panel">
+      <h2 class="panel-title"><span class="panel-icon">⚙</span> Signal Parameters</h2>
+
+      <!-- Source parameters -->
+      <div class="control-group">
+        <div class="control-group-title">Binary Source</div>
+
+        <div class="control-row">
+          <label for="m1" class="ctrl-label">Primary Mass (M☉)</label>
+          <div class="slider-row">
+            <input type="range" id="m1" min="5" max="100" value="36" step="1" class="slider" />
+            <span class="slider-val" id="m1-val">36</span>
+          </div>
+        </div>
+
+        <div class="control-row">
+          <label for="m2" class="ctrl-label">Secondary Mass (M☉)</label>
+          <div class="slider-row">
+            <input type="range" id="m2" min="5" max="100" value="29" step="1" class="slider" />
+            <span class="slider-val" id="m2-val">29</span>
+          </div>
+        </div>
+
+        <div class="control-row">
+          <label for="distance" class="ctrl-label">Distance (Mpc)</label>
+          <div class="slider-row">
+            <input type="range" id="distance" min="50" max="2000" value="410" step="10" class="slider" />
+            <span class="slider-val" id="distance-val">410</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Noise parameters -->
+      <div class="control-group">
+        <div class="control-group-title">Detector Noise</div>
+
+        <div class="control-row">
+          <label for="noise-type" class="ctrl-label">Noise Model</label>
+          <select id="noise-type" class="select-ctrl">
+            <option value="aligo">aLIGO (Realistic)</option>
+            <option value="white">White Noise</option>
+            <option value="pink">Pink / 1/f</option>
+            <option value="seismic">Seismic Dominated</option>
+          </select>
+        </div>
+
+        <div class="control-row">
+          <label for="noise-level" class="ctrl-label">Noise Level</label>
+          <div class="slider-row">
+            <input type="range" id="noise-level" min="0.1" max="3.0" value="1.0" step="0.1" class="slider" />
+            <span class="slider-val" id="noise-level-val">1.0×</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Filter selection -->
+      <div class="control-group">
+        <div class="control-group-title">Noise Filter</div>
+
+        <div class="filter-grid" id="filter-grid">
+          <button class="filter-btn active" id="filter-none"      data-filter="none">      Raw Signal </button>
+          <button class="filter-btn"        id="filter-bandpass"  data-filter="bandpass">  Bandpass    </button>
+          <button class="filter-btn"        id="filter-whitening" data-filter="whitening"> Whitening   </button>
+          <button class="filter-btn"        id="filter-matched"   data-filter="matched">   Matched ✦   </button>
+          <button class="filter-btn"        id="filter-wiener"    data-filter="wiener">    Wiener      </button>
+          <button class="filter-btn ml"     id="filter-ml"        data-filter="ml">        ML 🧠       </button>
+        </div>
+
+        <div class="filter-desc glass-inset" id="filter-desc">
+          No filter applied — showing raw noisy signal.
+        </div>
+
+        <div class="freq-range">
+          <div class="control-row">
+            <label for="f-low" class="ctrl-label">f_low (Hz)</label>
+            <div class="slider-row">
+              <input type="range" id="f-low" min="10" max="100" value="20" step="5" class="slider" />
+              <span class="slider-val" id="f-low-val">20</span>
+            </div>
+          </div>
+          <div class="control-row">
+            <label for="f-high" class="ctrl-label">f_high (Hz)</label>
+            <div class="slider-row">
+              <input type="range" id="f-high" min="200" max="2000" value="1000" step="50" class="slider" />
+              <span class="slider-val" id="f-high-val">1000</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Generate button -->
+      <button class="generate-btn" id="generate-btn">
+        <span class="btn-icon">⚡</span>
+        <span class="btn-text">Generate Signal</span>
+        <span class="btn-loader" id="btn-loader" aria-hidden="true"></span>
+      </button>
+    </aside>
+
+    <!-- ── Right: Charts ── -->
+    <div class="charts-area">
+
+      <!-- Waveform comparison -->
+      <div class="chart-card glass-panel">
+        <div class="chart-header">
+          <h3 class="chart-title">Waveform Comparison</h3>
+          <div class="chart-legend">
+            <span class="legend-dot" style="background:#00e5ff"></span><span>Noisy</span>
+            <span class="legend-dot" style="background:#b388ff"></span><span>Clean / Filtered</span>
+          </div>
+        </div>
+        <div class="chart-wrap">
+          <canvas id="waveform-chart"></canvas>
+        </div>
+      </div>
+
+      <!-- Frequency evolution -->
+      <div class="chart-card glass-panel">
+        <div class="chart-header">
+          <h3 class="chart-title">Chirp Frequency Evolution</h3>
+          <div class="chart-legend">
+            <span class="legend-dot" style="background:#69ff47"></span><span>Instantaneous Frequency (Hz)</span>
+          </div>
+        </div>
+        <div class="chart-wrap chart-wrap-sm">
+          <canvas id="frequency-chart"></canvas>
+        </div>
+      </div>
+
+      <!-- SNR metrics panel -->
+      <div class="snr-panel glass-panel" id="snr-panel" style="display:none">
+        <div class="snr-grid">
+          <div class="snr-card">
+            <span class="snr-label">SNR Before Filter</span>
+            <span class="snr-val red" id="snr-before">—</span>
+          </div>
+          <div class="snr-card">
+            <span class="snr-label">SNR After Filter</span>
+            <span class="snr-val green" id="snr-after">—</span>
+          </div>
+          <div class="snr-card">
+            <span class="snr-label">Improvement</span>
+            <span class="snr-val cyan" id="snr-improvement">—</span>
+          </div>
+          <div class="snr-card">
+            <span class="snr-label">Filter Method</span>
+            <span class="snr-method" id="snr-method">—</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</main>
+
+<!-- ═══════════════════════════════════════════════════════════════════════════
+     CHATBOT SECTION
+════════════════════════════════════════════════════════════════════════════ -->
+<section id="chatbot" class="section">
+  <div class="chatbot-container">
+    <div class="chatbot-header glass-panel">
+      <div class="chatbot-logo">
+        <span class="chatbot-avatar">🔭</span>
+        <div>
+          <h2 class="chatbot-name">GravBot</h2>
+          <p class="chatbot-sub">GW Physics RAG Chatbot · Powered by your knowledge base</p>
+        </div>
+      </div>
+      <div class="suggested-questions">
+        <span class="sq-label">Ask me:</span>
+        <button class="sq-btn" data-q="What is a gravitational wave chirp signal?">What is a chirp?</button>
+        <button class="sq-btn" data-q="How does matched filtering work in LIGO?">Matched filtering?</button>
+        <button class="sq-btn" data-q="What was GW150914 and why was it important?">GW150914?</button>
+        <button class="sq-btn" data-q="What are the main noise sources in LIGO detectors?">LIGO noise?</button>
+        <button class="sq-btn" data-q="How do deep learning autoencoders denoise gravitational waves?">ML denoising?</button>
+      </div>
+    </div>
+
+    <div class="chat-messages" id="chat-messages" role="log" aria-live="polite">
+      <div class="chat-welcome">
+        <div class="welcome-icon">〜</div>
+        <h3>Welcome to GravBot!</h3>
+        <p>I'm your expert AI tutor for gravitational wave physics. Ask me anything about GW theory, LIGO detectors, signal processing, or ML denoising.</p>
+      </div>
+    </div>
+
+    <form class="chat-input-form" id="chat-form" autocomplete="off">
+      <input
+        type="text"
+        id="chat-input"
+        class="chat-input"
+        placeholder="Ask about gravitational waves, LIGO, chirp signals, noise filtering…"
+        aria-label="Chat message input"
+      />
+      <button type="submit" class="chat-send-btn" id="chat-send-btn" aria-label="Send message">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+          <line x1="22" y1="2" x2="11" y2="13"/>
+          <polygon points="22 2 15 22 11 13 2 9 22 2"/>
+        </svg>
+      </button>
+    </form>
+  </div>
+</section>
+
+<script src="app.js"></script>
+</body>
+</html>

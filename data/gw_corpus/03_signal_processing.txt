@@ -1,0 +1,131 @@
+# Signal Processing for Gravitational Wave Detection
+
+## The Fourier Transform
+
+The Fourier transform decomposes a time-domain signal into its frequency components.
+Continuous Fourier transform: h̃(f) = ∫h(t) e^{-2πift} dt
+Inverse: h(t) = ∫h̃(f) e^{2πift} df
+
+Discrete Fourier Transform (DFT) for sampled data:
+H[k] = Σ h[n] e^{-2πikn/N}, n from 0 to N-1
+Frequency resolution: Δf = 1/(NΔt) = 1/T where T = observation duration.
+Maximum frequency (Nyquist): f_max = 1/(2Δt) where Δt = sample interval.
+
+Fast Fourier Transform (FFT): O(N log N) algorithm for DFT.
+Used everywhere in GW data analysis.
+
+## Power Spectral Density (PSD)
+
+PSD S_n(f) characterizes the noise in a detector as a function of frequency.
+One-sided PSD: S_n(f) = 2 ∫R(τ) e^{-2πifτ} dτ for f > 0
+Where R(τ) = <n(t) n(t+τ)> is the autocorrelation of noise n(t).
+
+Welch's method: estimate PSD by averaging periodograms from overlapping segments.
+Estimated PSD: S_n(f) = (2Δt/N) |H[k]|²
+More segments → smoother, more accurate PSD estimate.
+
+Amplitude Spectral Density (ASD): √S_n(f) in units of strain/√Hz.
+Integrating ASD over bandwidth gives RMS noise level.
+
+## Whitening
+
+Whitening transforms a colored (frequency-dependent) noise process into white noise.
+White noise has flat PSD: all frequencies equally noisy.
+Whitening filter: divide Fourier transform of data by √S_n(f)
+h_white(t) = IFFT[ h̃(f) / √S_n(f) ]
+
+This is essential in GW analysis because noise is not flat:
+- High noise at low frequency (seismic)
+- Low noise in the sweet spot (~100-300 Hz)
+- High noise at high frequency (shot noise)
+
+Whitened data has unit variance noise → statistical methods (Gaussian noise assumption) apply.
+LIGO data processing: always whiten before computing matched filter SNR.
+
+## Bandpass Filtering
+
+Bandpass filter selects a specific frequency range, attenuating others.
+Used to isolate the GW frequency band (typically 20-2000 Hz for ground detectors).
+
+Butterworth filter: maximally flat in passband, rolls off in stopband.
+Order n determines steepness of rolloff: -20n dB per decade.
+Design: specify passband [f_low, f_high] and filter order.
+
+Zero-phase filtering (filtfilt): apply filter forward and backward to eliminate phase distortion.
+Critical for preserving waveform shape in GW signals.
+
+Transfer function: H(s) = 1 / [product of (s - s_k)] where s_k are poles.
+Frequency response: |H(f)|², phase: arg H(f).
+
+## Matched Filtering
+
+Matched filtering is the optimal linear filter for detecting a known signal shape in noise.
+Invented by North (1943), fundamental to radar and GW detection.
+
+Concept: cross-correlate data with the expected signal template.
+Signal-to-noise ratio: SNR(t₀) = ∫h(t) q(t-t₀) dt / σ
+where q(t) is the filter, σ is the noise RMS.
+
+Optimal filter (matched filter): q̃(f) = h̃*(f) / S_n(f)
+This maximizes SNR = sqrt(4 ∫|h̃(f)|²/S_n(f) df)
+
+In practice:
+1. Compute FFT of data: d̃(f)
+2. Compute FFT of template: h̃(f)
+3. Compute matched filter output: z̃(f) = d̃(f) h̃*(f) / S_n(f)
+4. IFFT to get SNR time series: ρ(t) = IFFT[z̃(f)]
+5. Trigger when ρ > threshold (typically ρ > 8)
+
+Template bank: need to cover parameter space (masses, spins).
+Number of templates: 10,000 to 100,000+ for CBC searches.
+Computational cost: O(N_templates × N_data × log N_data) using FFT.
+
+## Wiener Filtering
+
+Wiener filter is the optimal linear filter for minimum mean squared error estimation.
+Assumes stationary Gaussian noise with known PSD.
+
+Transfer function: H_Wiener(f) = S_xs(f) / S_xx(f)
+S_xs(f) = cross-spectrum of desired signal and observation
+S_xx(f) = PSD of observation
+
+For additive noise model x = s + n:
+H_Wiener(f) = S_ss(f) / [S_ss(f) + S_nn(f)]
+At SNR >> 1: H ≈ 1 (pass signal through)
+At SNR << 1: H ≈ 0 (attenuate noise)
+
+Causal Wiener filter: requires factoring PSD (spectral factorization).
+Non-causal (two-sided): simpler, applicable to offline analysis.
+
+## Spectrograms and Time-Frequency Analysis
+
+Short-Time Fourier Transform (STFT): compute FFT in sliding time windows.
+Spectrogram: |STFT(t,f)|² shows frequency content as function of time.
+
+GW chirp appears as upward-sweeping track in spectrogram.
+Window functions (Hann, Blackman): reduce spectral leakage.
+Time-frequency resolution tradeoff: Δt × Δf ≥ 1/2 (uncertainty principle).
+
+Q-transform: constant-Q time-frequency representation.
+Better for GW signals (logarithmic frequency axis, matched to chirp track).
+Used in: GW event candidate visualization, glitch identification.
+
+## Hilbert Transform and Analytic Signal
+
+Analytic signal: z(t) = h(t) + i H{h(t)} where H = Hilbert transform
+Instantaneous amplitude (envelope): |z(t)|
+Instantaneous phase: arg[z(t)]
+Instantaneous frequency: f_inst = (1/2π) d(phase)/dt
+
+Useful for tracking frequency evolution of chirp signals.
+GW inspirals: instantaneous frequency sweeps from ~10 Hz to hundreds of Hz.
+
+## Statistical Noise Analysis
+
+Noise stationarity: real detector noise is non-stationary (changes over time).
+Segments: use 4-32 second segments to compute noise PSD locally.
+Gaussianity tests: check for outliers, heavy tails (glitches violate Gaussianity).
+
+False alarm rate (FAR): probability of noise producing an event above threshold.
+Significance: use time slides to estimate background distribution.
+p-value: probability that event is noise (p < 1e-5 considered confident detection).

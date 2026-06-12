@@ -1,0 +1,156 @@
+# Noise Types in Gravitational Wave Detectors
+
+## Overview of Detector Noise
+
+LIGO sensitivity is limited by many noise sources across different frequency bands.
+Understanding these noise types is essential for designing filtering strategies.
+Total noise PSD: S_total(f) = S_seismic + S_thermal + S_shot + S_QRPN + S_technical + ...
+
+The characteristic "S-curve" (noise bucket) shape of LIGO ASD:
+- Low frequency (< 20 Hz): seismic noise dominates
+- Mid frequency (20-200 Hz): thermal noise dominates
+- High frequency (> 200 Hz): shot noise dominates
+- Best sensitivity: ~100-300 Hz
+
+## Seismic Noise
+
+### Sources
+Ground motion from:
+- Microseismic hump: ocean waves at 0.1-0.3 Hz (100-300 mHz)
+- Human activity: traffic, industrial vibrations at 1-10 Hz
+- Earthquakes: broadband, can saturate detector
+- Wind: tree sways, building vibrations
+
+Seismic noise spectrum: S_seis(f) ∝ f^(-4) to f^(-8) (very steeply falls with frequency)
+At 10 Hz: ground moves ~ 10⁻¹⁰ m/√Hz
+At 1 Hz: ground moves ~ 10⁻⁸ m/√Hz
+
+### Isolation Strategy
+Multi-stage pendulum: each pendulum stage reduces seismic above its resonance by (f_res/f)²
+Active seismic isolation (HAM-ISI, BSC-ISI systems): measure ground motion → feed-forward cancellation
+Hydraulic External Pre-Isolator (HEPI): 6-DOF active isolation, factor ~100 reduction
+HAM-ISI: second stage, brings seismic noise down by factor >10,000 at 10 Hz
+
+Residual seismic coupling: through acoustic, electromagnetic paths (not mechanical).
+
+## Thermal Noise
+
+### Brownian Motion / Thermal Noise
+Fluctuation-dissipation theorem: any mechanical system with dissipation has thermal noise.
+One-sided PSD: S_x(f) = (4 k_B T / 2π f) Im[χ(f)]
+where χ(f) = mechanical susceptibility, k_B = 1.38 × 10⁻²³ J/K, T = temperature
+
+Thermal noise ~ 1/√f × √(loss angle): lower loss → lower thermal noise.
+
+### Mirror Coating Thermal Noise (Dominant at 50-200 Hz)
+Alternating high-index (Ta₂O₅) and low-index (SiO₂) dielectric coatings.
+Loss angle of coatings: φ_coating ~ 10⁻³ to 10⁻⁴
+Much noisier than substrate: φ_substrate ~ 10⁻⁷ (fused silica)
+
+Mitigation: new coating materials (crystalline AlGaAs, silicon carbide), amorphous silicon.
+LIGO O4: improved coatings reduced coating thermal noise by ~30%.
+
+### Suspension Thermal Noise (10-50 Hz)
+Pendulum and violin modes of suspension fibers.
+Fused silica fibers: very low mechanical loss, φ ~ 10⁻⁷ to 10⁻⁸.
+Pendulum resonance: f_pend ~ 0.6 Hz → isolation above resonance.
+Violin modes: sharp resonances at ~500 Hz (fibers vibrating like violin strings).
+
+### Thermoelastic Noise
+Temperature fluctuations → mirror expansion/contraction → position noise.
+Substrate thermoelastic: S_TE ∝ (αT)²/(κ C_v) × f^{-1/2}
+α = thermal expansion coefficient, κ = thermal conductivity, C_v = heat capacity.
+
+Mitigation: cryogenic operation (KAGRA, Einstein Telescope) — lowers T and changes α.
+
+## Shot Noise
+
+### Photon Statistics
+Laser light consists of photons following Poisson statistics.
+Number of photons in time interval Δt: N ~ P Δt / (hf)
+RMS fluctuation: ΔN = √N (Poisson), giving phase noise: Δφ ~ 1/√N
+
+Shot noise ASD: S_shot^{1/2}(f) = √(hf_laser / P_circ) in phase units.
+Converting to strain: S_h^{1/2}(f) = (1/L) √(hf_laser c / (2πf)² P_circ)
+
+Shot noise is white (flat) above ~few Hz; S_shot ∝ 1/P_laser.
+Increasing laser power reduces shot noise.
+
+### Quantum Radiation Pressure Noise (QRPN)
+Photons carry momentum; fluctuating radiation pressure pushes test mass.
+S_QRPN ∝ P_laser / f⁴ × 1/m²
+
+QRPN and shot noise trade off: SQL sets minimum combined quantum noise.
+Standard Quantum Limit: S_SQL(f) = (4 ℏ) / (m (2πf)²)
+
+Below SQL: requires quantum optics tricks (squeezed light, variational readout).
+
+### Squeezed Light
+Heisenberg: ΔX₁ ΔX₂ ≥ 1/4 (for quadrature amplitudes)
+Squeezed state: ΔX₁ < 1/2 with ΔX₂ > 1/2 (uncertainty redistributed)
+Inject squeezed vacuum into antisymmetric port → reduce shot noise in measurement quadrature.
+LIGO O3: 3 dB squeezing demonstrated.
+Frequency-dependent squeezing (with filter cavity): reduce both shot noise and QRPN simultaneously.
+
+## Quantum Noise
+
+At fundamental level, quantum noise includes:
+- Shot noise (readout quantum noise): limits high frequency
+- Radiation pressure noise (back-action): limits low frequency
+- Optomechanical correlations: can be exploited
+
+Quantum Fisher information limits and Cramér-Rao bound set ultimate sensitivity.
+
+## Technical Noise Sources
+
+### Laser Frequency Noise
+Laser frequency fluctuations couple to arm length difference via mismatch.
+Specification: ~10 Hz/√Hz of free-running laser → suppressed to 10⁻⁶ Hz/√Hz with pre-stabilization.
+Reference cavity: Pound-Drever-Hall locking to ultra-stable Fabry-Pérot cavity.
+
+### Laser Intensity Noise
+Power fluctuations couple to radiation pressure → differential arm motion.
+Intensity noise stabilization: in-loop photodetector + AOM feedback.
+
+### Control Noise
+Servo systems to hold cavities on resonance introduce noise.
+Angular control, length control servo noise floors.
+Balance: enough gain to suppress noise, not so much it injects elsewhere.
+
+## Glitches (Non-Gaussian Transients)
+
+Glitches are short-duration noise transients that can mimic or obscure GW signals.
+Glitch rate in O3 LIGO: ~1 per 30-100 seconds.
+Duration: 0.01 ms to several seconds.
+
+### Common Glitch Types
+- Blip: short, symmetric burst at ~100 Hz. Unknown origin.
+- Koi Fish: scattered light with specific morphology.
+- Scratchy: broadband noise, electrical.
+- Scattered Light: nonlinear coupling of seismic to optical path.
+- Helix: scattering from moving optical element.
+- Violin Mode: excitation of suspension fiber resonances.
+- 60 Hz Power Line Harmonics: electromagnetic coupling.
+
+### Environmental Coupling
+Acoustic: sound waves deform beam tube → length change.
+Magnetic: Schumann resonances at 8 Hz, 14 Hz, etc.
+Cosmic rays: muons pass through test masses → impulse noise.
+Radio frequency: AM/FM radio coupling to control electronics.
+
+### Glitch Mitigation
+Physical environment monitoring (PEM) sensors: microphones, magnetometers, seismometers.
+Hardware injections: simulate GWs to test pipeline.
+Noise subtraction: measure noise source → subtract from main channel (e.g., seismic subtraction).
+Gravity Spy: ML classification of spectrograms to identify and veto glitch types.
+
+## Noise Budget
+
+A noise budget accounts for all known noise contributions vs total measured noise.
+If noise budget matches total noise → all noise understood.
+Unexplained noise ("excess noise") → ongoing investigation.
+
+LIGO noise floor at design:
+- 10 Hz: ~10⁻²² strain/√Hz (seismic dominated)
+- 100 Hz: ~4 × 10⁻²⁴ strain/√Hz (thermal dominated)
+- 300 Hz: ~10⁻²³ strain/√Hz (shot noise dominated)

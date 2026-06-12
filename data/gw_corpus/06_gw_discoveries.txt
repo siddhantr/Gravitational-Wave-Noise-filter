@@ -1,0 +1,129 @@
+# Gravitational Wave Discoveries and Multi-Messenger Astronomy
+
+## GW150914 — The First Detection
+
+Date: September 14, 2015 (observed 09:50:45 UTC)
+Published: Physical Review Letters, February 11, 2016
+
+Source: Binary Black Hole (BBH) merger
+- Primary BH mass: ~36 M☉
+- Secondary BH mass: ~29 M☉
+- Final BH mass: ~62 M☉ (energy radiated: ~3 M☉ c² ~ 5 × 10⁴⁷ J)
+- Distance: ~410 Mpc (~1.3 billion light-years)
+- Sky localization: ~600 deg² (two LIGO detectors only)
+
+Signal characteristics:
+- Duration in band: ~0.2 seconds
+- Frequency sweep: ~35 Hz to ~150 Hz
+- Peak strain: h ~ 10⁻²¹
+- Network SNR: ~24
+
+Significance: false alarm rate < 1 per 200,000 years.
+
+Confirmed: black holes are real astrophysical objects.
+Confirmed: binary black holes exist and merge within Hubble time.
+Confirmed: gravitational waves exist and travel at the speed of light.
+Nobel Prize 2017: Weiss, Barish, Thorne (LIGO founders).
+
+## GW151226 — Boxing Day Event
+
+Date: December 26, 2015
+Source: Binary Black Hole merger
+Masses: ~14 M☉ + ~8 M☉
+Signal: longer in band (~1 second), lower mass → higher frequency at merger.
+Network SNR: ~13.
+
+## GW170817 — Binary Neutron Star Merger (Multi-messenger Astronomy)
+
+Date: August 17, 2017
+Source: Binary Neutron Star (BNS) merger — first detected!
+- NS masses: ~1.17 M☉ and ~1.36 M☉
+- Distance: ~40 Mpc (~130 million light-years) — much closer than BBH events
+- Sky localization: ~28 deg² (LIGO + Virgo three-detector network)
+
+GW signal:
+- Duration: ~100 seconds in band! (much longer than BBH — lower chirp mass)
+- Frequency sweep: 24 Hz to ~2000 Hz (merger)
+- Peak strain: h ~ 10⁻²²
+
+Electromagnetic counterparts detected:
+- GRB 170817A: short gamma-ray burst detected by Fermi-GBM, 1.74 seconds after merger
+- AT2017gfo: optical kilonova transient in galaxy NGC 4993
+- X-ray, radio afterglow observed weeks later
+
+Multi-messenger science:
+- Confirmed: short gamma-ray bursts from BNS mergers
+- Confirmed: heavy elements (r-process nucleosynthesis) produced in mergers
+  - Gold, platinum, uranium — detected in kilonova spectra!
+- Hubble constant measurement: H₀ = 70⁺¹²⁻⁸ km/s/Mpc (independent "standard siren" method)
+- Neutron star equation of state constraints
+- Speed of gravity = speed of light to 1 part in 10¹⁵
+
+## GWTC Catalogs
+
+GWTC-1 (O1+O2 runs): 11 events (10 BBH, 1 BNS)
+GWTC-2 (O3a): 47 events total (including 36 new)
+GWTC-2.1 (O3a reanalysis): 90 total candidates
+GWTC-3 (O3b): 90 confident GW events total
+
+Event classes observed:
+- Binary Black Hole (BBH): most common, ~85% of events
+- Binary Neutron Star (BNS): GW170817, GW190425
+- Neutron Star-Black Hole (NSBH): GW200105, GW200115
+- Mass gap events: GW190521 (intermediate mass black holes, ~66+85 M☉)
+
+## Notable Individual Events
+
+### GW190521
+Masses: ~85 M☉ + ~66 M☉ → remnant ~142 M☉ intermediate mass black hole!
+Signal duration: <1 second in band.
+First confirmed intermediate mass black hole.
+Secondary in "upper mass gap" (50-130 M☉ forbidden by pair-instability supernovae).
+
+### GW190814
+Masses: ~23 M☉ + 2.6 M☉ — secondary is either most massive neutron star or lightest black hole ever!
+Mass ratio: 1:9 (highly asymmetric)
+"Mass gap" object: 2.5-5 M☉ (no confirmed BH or NS in this range previously).
+
+### GW190425
+Binary Neutron Star merger.
+Total mass: ~3.4 M☉ — much more massive than Milky Way BNS population.
+No EM counterpart detected (too far, ~160 Mpc).
+
+## Future Detectors and Sources
+
+### Einstein Telescope (ET)
+Underground triangle design, arm length: 10 km.
+Cryogenic operation (10 K) to reduce thermal noise.
+Ten times more sensitive than Advanced LIGO.
+Expected: thousands of BNS per year, BH mergers to cosmological distances.
+Start: ~2035.
+
+### Cosmic Explorer (CE)
+L-shaped, arm length: 20-40 km.
+USA next-generation detector.
+Sensitivity: ~10× Advanced LIGO.
+Could detect BNS out to z > 2 (most of observable universe).
+
+### LISA
+Heliocentric orbit, 2.5 million km arms.
+Frequency band: 0.1 mHz to 1 Hz.
+Sources: supermassive BH mergers, galactic double white dwarf binaries, extreme mass ratio inspirals (EMRIs).
+Launch: ~2035.
+
+### Pulsar Timing Arrays (PTAs)
+Sensitive to nHz gravitational waves.
+NANOGrav 2023: evidence for stochastic GW background!
+Sources: supermassive BH binaries in galaxy mergers.
+Frequency: ~10 nHz = 1/(several years).
+
+## Multi-Messenger Astronomy
+
+GW + EM: "hearing" and "seeing" the same event.
+GW + neutrinos: future possibility (supernova detection).
+GW + cosmic rays: indirect correlation studies.
+
+GW170817 opened the era of multi-messenger GW astronomy.
+Future BNS events with ET+CE: sub-degree sky localization → easier EM follow-up.
+Standard sirens: GW distance + EM redshift → independent H₀ measurement.
+With ~50 BNS events: H₀ to ~2% precision → resolve Hubble tension!
